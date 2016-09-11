@@ -1,0 +1,291 @@
+> #Appendix B 341-352 minus simple matrix algerbra
+>
+> #B.1 Help
+> #this is the example text "this will calculate the mean of 10 random standard normal variables
+> mean(rnorm(10))
+[1] -0.2154783
+> #submit from the script direcly to the console by selecting the line and hitting Ctrl-r
+> #access help for specific functions with `?`(mean)
+> #the sign ` is from the button near the line of numbers
+> `?`(mean)
+> #the command "help(mean)" also works
+> help(mean)
+> #if you don't know the exact name of the R function you want help with, you can try help.search("mean") and the next line is apropos(mean)
+> #these provide lists of places you can look for functions related to this keyword
+> help.search("mean")
+> apropos("mean")
+ [1] ".colMeans"     ".rowMeans"     "colMeans"
+ [4] "kmeans"        "mean"          "mean.Date"
+ [7] "mean.default"  "mean.difftime" "mean.POSIXct"
+[10] "mean.POSIXlt"  "rowMeans"      "weighted.mean"
+> #for packages of R online, help for functions not yet downloaded retrieved with RSiteSearch("violin") and RSiteSearch("violin", restrict = c("functions"))
+> RSiteSearch("violin")
+A search query has been submitted to http://search.r-project.org
+The results page should open in your browser shortly
+> #opens web page seaching violin
+> RSiteSearch("violin", restrict = c("function"))
+A search query has been submitted to http://search.r-project.org
+The results page should open in your browser shortly
+> help(RSiteSearch)
+> #c("functions") restricts the search for help views
+>
+>
+> #B.2 Assignment
+> #assign results of action to new object, use arrow aka "<-" to do so
+> # to reveal contents of the object, enter name of object
+> #perform two actions on one line by separating them with semicolon aka ";"
+> a<- 2+3
+> a
+[1] 5
+> b<- a+a
+> b
+[1] 10
+> a+a; a+b
+[1] 10
+[1] 15
+> #semicolon sometimes refered to as an "end of line" operator
+>
+>
+> #B.3 Data Structures
+> #single real number is a scalar, more complex objects exist in R
+> #B.3.1 Vectors
+> #vector critical to R, most operations in R on vectors, vector is column of scalars
+> #to enter data into R use "c()" an create an R object (vector in this case)
+> Y<-c(8.3, 8.6, 10.7, 10.8, 11, 11, 11.1, 11.2, 11.3, 11.4)
+> #could also use
+> Y=c(8.3, 8.6, 10.7, 10.8, 11, 11, 11.1, 11.2, 11.3, 11.4)
+> #R operates on objects, objects can be vectors, matrices, lists or other type of object
+> #using the ":" sign between two integers gives a list of the integers between them
+> 1:4
+[1] 1 2 3 4
+> 4:1
+[1] 4 3 2 1
+> -1:3
+[1] -1  0  1  2  3
+> -(1:3)
+[1] -1 -2 -3
+> #note for the above, order of operations seems to apply aka it goes"list 1:3" then "multiply everything in parenthesis by -1"
+> seq(from=1, to = 3, by = 0.2)
+ [1] 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0
+> #Note: don't forget equal signs between signifiers and numbers, abov gives numbers in sequence and everything between by specied interval
+> seq(1,3, by =0.2)
+ [1] 1.0 1.2 1.4 1.6 1.8 2.0 2.2 2.4 2.6 2.8 3.0
+> #same as above
+> seq(1,3, length=7)
+[1] 1.000000 1.333333 1.666667 2.000000 2.333333
+[6] 2.666667 3.000000
+> #Above gives sequence with set number of points along it, includes the bounds
+> #repetive sequences with the "rep" command
+> rep(1,3)
+[1] 1 1 1
+> #above gives 1 three times in a row
+> rep(1:3, 2)
+[1] 1 2 3 1 2 3
+> #above gives 1-3 twice, aka  1 2 3 1 2 3
+> rep(1:3, each = 2)
+[1] 1 1 2 2 3 3
+> #above gives each number from 1-3 repeated twice aka 1 1 2 2 3 3
+> #B.3.2 Getting Info about Vectors
+> sum(Y)
+[1] 105.4
+> mean(Y)
+[1] 10.54
+> max(Y)
+[1] 11.4
+> length(Y)
+[1] 10
+> summary(Y)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+   8.30   10.72   11.00   10.54   11.18   11.40
+> #summary includes min, max, 1st/3rdQuartile, Median, Mean
+> #vectors can be a character or logical/boolean thing
+> Names<-c("Sarah", "Yunluan")
+> b<-c(TRUE, FALSE)
+> #use "class()" to determine type of class of data it belongs to, displayed on top right in R studion for values you've assigned
+> class(Y)
+[1] "numeric"
+> class(b)
+[1] "logical"
+> #can test if each element of vector is greater than a particular value using ">"
+> #when testing object, will get back a logical vector with appropriate response for each value
+> Y>10
+ [1] FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [9]  TRUE  TRUE
+> Y>mean(Y)
+ [1] FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [9]  TRUE  TRUE
+> # test with, <, >, >=, <=, ==, != and other conditions
+> #== tests if vector equal to a number
+> Y==11
+ [1] FALSE FALSE FALSE FALSE  TRUE  TRUE FALSE FALSE
+ [9] FALSE FALSE
+> #!= tests of "not equal to"
+> Y!=11
+ [1]  TRUE  TRUE  TRUE  TRUE FALSE FALSE  TRUE  TRUE
+ [9]  TRUE  TRUE
+> #Algerbra with vectors
+> #when adding/multiplying vectors actually operaing on elements of the vectors
+> a<-1:3
+> b<-4:6
+> a+b
+[1] 5 7 9
+> #mulitplication acts on each pair of vector
+> a*b
+[1]  4 10 18
+> a/b
+[1] 0.25 0.40 0.50
+> #scalars operate on vectors
+> a+1
+[1] 2 3 4
+> #adds one to each element
+> a*2
+[1] 2 4 6
+> #mutiplies each element by two
+> 1/a
+[1] 1.0000000 0.5000000 0.3333333
+> #R recycles the scalar as many times as needed in order to match the length of the vector
+> #Note: if try to multiply vectors of unequal length, R perform operation but may not give warning
+> #should warn if multiply 3 by 2 vectors ex below
+> a * 1:2
+[1] 1 4 3
+Warning message:
+In a * 1:2 :
+  longer object length is not a multiple of shorter object length
+> #gives the warningWarning message: "In a * 1:2 :   longer object length is not a multiple of shorter object length"
+> #R suppossedly recycles the shorter vector enough to match the length of longer vector, supposedly same as
+> a*c(1,2,1)
+[1] 1 4 3
+> #if multiply vectors with length that is multiple of other, get no error, ex 4 and 2
+> 1:4*1:2
+[1] 1 4 3 8
+> #worked fine
+> #above same as below
+> 1:4*c(1,2,1,2)
+[1] 1 4 3 8
+> #B.3.3 Extraction and Missing Values
+> #two ways to extract
+> #1-id which row/column wanted
+> Y[1]
+[1] 8.3
+> Y[1:3]
+[1]  8.3  8.6 10.7
+> #2-provide logical vector (e.g. of TRUE's and FALSE's) of same length of vector you want to subset
+> Y>mean(Y)
+ [1] FALSE FALSE  TRUE  TRUE  TRUE  TRUE  TRUE  TRUE
+ [9]  TRUE  TRUE
+> #above line is just reminder, not necessary)
+> Y[Y>mean(Y)]
+[1] 10.7 10.8 11.0 11.0 11.1 11.2 11.3 11.4
+> #extracts all values in Y for which the statement "value>mean(Y)" is TRUE
+> #missing data is of type "NA" aka "not available", R won't let you calc mean of a vector with missing data ordinarily,
+> #can deal with elements missing with special function is.na
+> a<-c(5,3,6,NA)
+> a
+[1]  5  3  6 NA
+> is.na(a)
+[1] FALSE FALSE FALSE  TRUE
+> #gives back logic vector to the question "is the value=NA?"
+> !is.na(a)
+[1]  TRUE  TRUE  TRUE FALSE
+> #gives back logic vector to the question "is the value not=NA?"
+> #can use these functions to call up only non-NA data like so
+> a[!is.na(a)]
+[1] 5 3 6
+> #same with below
+> na.exclude(a)
+[1] 5 3 6
+attr(,"na.action")
+[1] 4
+attr(,"class")
+[1] "exclude"
+> #more example
+> mean(a)
+[1] NA
+> mean(a, na.rm=TRUE)
+[1] 4.666667
+> d<-na.exclude(a)
+> mean(d)
+[1] 4.666667
+> #B.3.4 Matrices
+> #2-d set of elements, all elements of same type
+> #character matrix
+> matrix(letters[1:4], ncol = 2)
+     [,1] [,2]
+[1,] "a"  "c"
+[2,] "b"  "d"
+> #letters 1:4 gives a b c d, ncol gives number of columns
+> #numeric matrix
+> M<-matrix(1:4, nrow =2)
+> M
+     [,1] [,2]
+[1,]    1    3
+[2,]    2    4
+> #Note:matrix filled by columns in column major order, can also do my row
+> M2<-matrix(1:4, nrow =2, byrow=TRUE)
+> M2
+     [,1] [,2]
+[1,]    1    2
+[2,]    3    4
+> #matrix with 1's on diagonal
+> I<-diag(1, nrow=2)
+> I
+     [,1] [,2]
+[1,]    1    0
+[2,]    0    1
+> #Note, the column and rows are labeled with an integer and comma, likely specifies order aka 1, and ,1 intersect at 1,1
+> #Identity matrix important in matrix algerbra, equiv to scalar 1
+> #inverse of matrix M is matrix such that can mult with M and equal I (I has 1's along diagonal, 0's elsewhere)
+> Minv<-solve(M)
+> M %*% Minv
+     [,1] [,2]
+[1,]    1    0
+[2,]    0    1
+> #QR decomposition available (e.g. qr.solve())
+> qr.solve(M)
+     [,1] [,2]
+[1,]   -2  1.5
+[2,]    1 -0.5
+> help(qr.solve)
+> #extraction in matrices, same as in vectors, but specify both rows and columns
+> M[1,2]
+[1] 3
+> M[1,1:2]
+[1] 1 3
+> #if leave either row/column blank, R extract all row/columns
+> M[,2]
+[1] 3 4
+> M[, ]
+     [,1] [,2]
+[1,]    1    3
+[2,]    2    4
+> #skipping simple matrix algerbra
+> #B.3.5 Data frames
+> #data frames are 2-d, sim to spreadsheet/matrices.  All columns have same #rows
+> #unlike matrix, each column can be different data type
+> dat<-data.frame(species =c("S. altissima", "S. rugosa", "E. graminifolia", "A. pilosus"), treatment=factor(c("Control", "Water", "Control", "Water")),height=c(1.1, 0.8, 0.9, 1), width=c(1, 1.7, 0.6, 0.2))
+> dat
+          species treatment height width
+1    S. altissima   Control    1.1   1.0
+2       S. rugosa     Water    0.8   1.7
+3 E. graminifolia   Control    0.9   0.6
+4      A. pilosus     Water    1.0   0.2
+> #so eac vector in the "data.frame()" is a column, with the vector name as the header
+> #extract data like in matrices
+> dat[2,]
+    species treatment height width
+2 S. rugosa     Water    0.8   1.7
+> #above brings out the the column header too
+> dat[3,4]
+[1] 0.6
+> #can test elements in dataframes, below tests if each element in column 2 is "Water", can extract rows associated with this criterion
+> dat[,2]=="Water"
+[1] FALSE  TRUE FALSE  TRUE
+> dat[dat[,2]=="Water",]
+     species treatment height width
+2  S. rugosa     Water    0.8   1.7
+4 A. pilosus     Water    1.0   0.2
+> #can use subset function
+> subset(dat,treatment=="Water")
+     species treatment height width
+2  S. rugosa     Water    0.8   1.7
+4 A. pilosus     Water    1.0   0.2
