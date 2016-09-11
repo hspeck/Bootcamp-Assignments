@@ -55,3 +55,82 @@ output[1]<-25
 #assigning output to begin with and running through as t goes?
 for (t in 1:gens) output[t+1]<-output[t] +round(rnorm(n=1, mean=0, sd=2), 0)
 output
+
+
+
+#B.13 Graphics
+#B.13.1 "plot"
+data(trees)
+attach(trees)
+plot(Girth,Height)
+help(attach)
+#attach attaches a database to the search path, in this case trees
+#B.13.2 Adding points, lines and text to a plot
+#can add more info to plot
+#below set up new graph without plotting points, add text at each point, then more points, a line, some text
+par(mar=c(5,4,3,2))
+plot(Girth, Volume, type = "n", main =  "My Trees")
+points(Girth, Volume, type="h", col="lightgrey", pch=19)
+#want to add points for these data using tree heights as ploting symbol, using alternate coloring system (hc1) (works better for humans), scale colors so hue varies between 30 and 300 depending onn height, allowing symbols to be transparent (ie. 90% opaque) overlapping, allow size of number to vary with height(cex=0.5 +hts) last, add legend
+hts<-(Height-min(Height))/max(Height-min(Height))
+my.colors<-hcl(h=30+270 *hts, alpha=0.9)
+text(Girth, Volume, Height, col=my.colors, cex = 0.5+hts)
+#B.13.3 More than one response variable
+#often plot more than one response variable per axis, could use lines/points to add each additional variable, could also use matplot to plot a matrix of variables vs. one predictor
+trees.sort<-trees[order(trees$Girth, trees$Height), ]
+matplot(trees.sort$Girth, trees.sort[, 2:3], type = "b")
+text(18, 40, "Volume", col="darkred" )
+text(10, 58, "Height")
+#commonly used arguements to plot table listed at 376
+#often want to add second y-axis to graph with diff scale, trick is to plot a graph then tell R to do next step as if on a new device (see 'par' help page) while it really isn't, just overlaying one ontop of the other
+#Note-also specify extra margin space on right side for second Y axis
+windows(4, 4)
+#this line gives an error, no quartz object. is this needed?, not in full script text below
+#this is because its a MAC command, Windows is windows, changed
+par(mar=c(5,4,2,4))
+plot(Girth, Volume, main="My Trees")
+#Now do the second plot, use same x values, new Y data, no labels specified, use a different line type for clarity
+par(new=TRUE)
+plot(Girth, Height, axes=FALSE, bty= "n", xlab="",ylab = "", pch=3)
+#add new Y values on 4th side(aka righthand Y axis), add a Y axis label for "marginal text"
+axis(4)
+mtext("Height", side=4,line=3)
+#full script below
+par(mar=c(5,4,2,4))
+plot(Girth,Volume, main="MyTrees")
+par(new=TRUE)
+plot(Girth, Height, axes=FALSE, bty="n", xlab="", ylab = "", pch=3)
+axis(4)
+mtext("Height",side=4,line=3)
+#B.13.4 Controlling Graphics Devices
+#when make grpah with plot function, typically open graphics window (in studio is lower right),if want more control have several functions for that
+#can create new graphics "devices" i.e. seperate windows with command "windows" for Microsoft, or wuartz for Mac, or x11 for X11 Window system
+#specify dimensions with width and height inside, see below
+windows(width = 5, height = 3)
+#to control parameters of graph (ie appearance), use arguements to the par function
+#many arguemtns refer to sides of graph, numbered 1-4 for bottom x,leftY, topX, rightY
+#arguements to "par" are a lot, see ?par) including mar(width of side margins, units in # of lines of text, default c(5,4,4,2)+0.1 so bottom is most room, right has least)
+#"mgp" control spacing of axis title, labels,and line itself, default c(3,1,0) so axis title is 3 lines awy and axis line at edge of plotting region
+#"tcl"=tick length, as fraction of height of line of text; negative values put ticks outside, positive is inside, default -0.5
+#can build each side of graph separetly by initiating graph but not plotting axes plots (..., axes=FALSE) and then adding axes seperately e.g. "axis(1)" adds bottom
+#can use layout to make graph with several smaller subgraphs (see also mfrow and mfcol args to par and function split.screen).  function layout takes matrix as arguement, matrix contains sequence fo number telling R how to fill regions.  Graphs can fit in more than one of these regions if indicated by same numebr
+#creating compound graph on 4x4 grid, two rows filled in by rwos, 1st in upper left, second upper right, thrid fill thrid and fouth spots in second
+windows(5,5)
+layout(matrix(c(1,2,3,3), nrow=2, byrow=TRUE))
+plot(Girth, Height)
+#second and third
+par(mar=c(3,3,1,1), mgp=c(1.6,0.2,0), tcl=0.2)
+plot(Girth, Height)
+par(mar=c(3,3,2,1),mgp=c(1.6,0.2,0), tcl=0.2)
+plot(Girth, Height, axes=FALSE,xlim=c(8,22))
+axis(1,tcl=-0.3)
+axis(2,tick=F)
+rug(Height,side=2,col=2)
+title("A Third, Very Wide, Plot")
+#B.13.5 Creating a Grappic File
+#one way to get graphic is to create graphics device and then save with dev.print in format you want ex PDF
+getwd()
+windows(4,4)
+plot(Height, Volume, main="Tree Data")
+dev.print(pdf,"MyTree.pdf")
+#that put it into my documents folder, suppose I could change working directory before doing it to make it go in specific folder, or specify it end up elsewhere
