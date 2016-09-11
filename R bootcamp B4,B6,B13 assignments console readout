@@ -1,0 +1,187 @@
+> #B4,B6, B13
+>
+>
+> #B4 Functions
+> #functions are commands that do things, they have names, arguements and values, ex below
+> help(mean)
+> #on help page, shows the arguements, first object=x, (object to calc mean for), second arg is trim=0 (fraction of observations to trim from each end of x) note that as it is already 0 this is default, meaning below are equivalent
+> mean(1:4)
+[1] 2.5
+> mean(1:4,trim=0)
+[1] 2.5
+> #R is "object oriented language" so same function name do different things on different classes of object
+> class(1:10)
+[1] "integer"
+> class(warpbreaks)
+[1] "data.frame"
+> summary(1:10)
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+   1.00    3.25    5.50    5.50    7.75   10.00
+> summary(warpbreaks)
+     breaks      wool   tension
+ Min.   :10.00   A:27   L:18
+ 1st Qu.:18.25   B:27   M:18
+ Median :26.00          H:18
+ Mean   :28.15
+ 3rd Qu.:34.00
+ Max.   :70.00
+> #for warpbreaks data frame, summary give six number summary for each numeric integer column but gives "tables" of the factors-i.e. count occurrences of each level of a factor and sorts levels. Summary or linear model gets output of regression
+> summary(lm(breaks ~ wool, data =warpbreaks))
+
+Call:
+lm(formula = breaks ~ wool, data = warpbreaks)
+
+Residuals:
+    Min      1Q  Median      3Q     Max
+-21.037  -9.259  -3.648   4.713  38.963
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)   31.037      2.501  12.410   <2e-16 ***
+woolB         -5.778      3.537  -1.634    0.108
+---
+Signif. codes:
+0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 13 on 52 degrees of freedom
+Multiple R-squared:  0.04881,	Adjusted R-squared:  0.03052
+F-statistic: 2.668 on 1 and 52 DF,  p-value: 0.1084
+
+> #B.4.1 writing own functions
+> #making own function to calculate mean but tilt it as described
+> MyBogusMean<-function(x, cheat=0.05) {
++   SumOfX<-sum(x)
++   n<-length(x)
++   trueMean<-SumOfX/n
++   (1+cheat)*trueMean
++ }
+> RealSales<-c(100,200,300)
+> MyBogusMean(RealSales)
+[1] 210
+> #function can take any input and do things, x and cheat are the arguements for the function
+> #we supplied arguement for cheat, this means that cheat has a default value, and don't need to supply it, if arguement not have default will have to supply it. Even if have one can change it ex below
+> MyBogusMean(RealSales, cheat = 0.1)
+[1] 220
+>
+>
+> #B.6 Iterated Actions: the apply Family and Loops
+> #want to perform action many times, some cases is independent, for this we have many options
+> #if want action depend on previous action, then guide suggests for-loops
+> #B.6.1 Iterations of independent actions
+> #ex: have matrix want to do same thing to each row/column, use "apply", to apply function to each column/row
+> #tell "apply" what data to use, tell it the "margin" to focus on, tell it the function, "margin" is side of the matrix, matrices described by #rows then columns, so rows are first margin, columns are second margin
+> m<-matrix(1:10, nrow=2)
+> m
+     [,1] [,2] [,3] [,4] [,5]
+[1,]    1    3    5    7    9
+[2,]    2    4    6    8   10
+> apply(m, MARGIN =1, mean)
+[1] 5 6
+> apply(m, MARGIN = 2, sum)
+[1]  3  7 11 15 19
+> #see ?rowMeans for simple/faster operations
+> #lapply will "apply" a function to each list element or column of dataframe, and return a list. "saplly" is sim, but simplifies result to less complex data structure
+> sapply(1:10, function(i) mean(rnorm(5)))
+ [1]  0.14212890  0.56479860 -1.09562523  0.42807444
+ [5] -0.85308889 -0.82998559 -0.40383902  0.16937972
+ [9] -0.09302349 -0.72704111
+> #i in function for independent?
+> #6.2 Dependent iterations
+> #use "for loops" for repeated actions dependent on previous outcomes
+> #for R for loops, computation is fastest if make holder for the output
+> #simulating random walk, start with 25 individuals, increase/decrease by some amount drawn randomly form normal distribution (mean 0, standard deviation 2) round "amount" to nearest integer (i.e. 0th decimal place)
+> #output differs due to random process
+> gens<-10
+> #defining gens allows us to change this for function
+> output<-numeric(gens+1)
+> output[1]<-25
+> #assigning output to begin with and running through as t goes?
+> for (t in 1:gens) output[t+1]<-output[t] +round(rnorm(n=1, mean=0, sd=2), 0)
+> output
+ [1] 25 26 24 22 22 20 19 17 16 18 15
+>
+>
+>
+> #B.13 Graphics
+> #B.13.1 "plot"
+> data(trees)
+> attach(trees)
+The following objects are masked from trees (pos = 3):
+
+    Girth, Height, Volume
+
+> plot(Girth,Height)
+> help(attach)
+> #attach attaches a database to the search path, in this case trees
+> #B.13.2 Adding points, lines and text to a plot
+> #can add more info to plot
+> #below set up new graph without plotting points, add text at each point, then more points, a line, some text
+> par(mar=c(5,4,3,2))
+> plot(Girth, Volume, type = "n", main =  "My Trees")
+> points(Girth, Volume, type="h", col="lightgrey", pch=19)
+> #want to add points for these data using tree heights as ploting symbol, using alternate coloring system (hc1) (works better for humans), scale colors so hue varies between 30 and 300 depending onn height, allowing symbols to be transparent (ie. 90% opaque) overlapping, allow size of number to vary with height(cex=0.5 +hts) last, add legend
+> hts<-(Height-min(Height))/max(Height-min(Height))
+> my.colors<-hcl(h=30+270 *hts, alpha=0.9)
+> text(Girth, Volume, Height, col=my.colors, cex = 0.5+hts)
+> #B.13.3 More than one response variable
+> #often plot more than one response variable per axis, could use lines/points to add each additional variable, could also use matplot to plot a matrix of variables vs. one predictor
+> trees.sort<-trees[order(trees$Girth, trees$Height), ]
+> matplot(trees.sort$Girth, trees.sort[, 2:3], type = "b")
+> text(18, 40, "Volume", col="darkred" )
+> text(10, 58, "Height")
+> #commonly used arguements to plot table listed at 376
+> #often want to add second y-axis to graph with diff scale, trick is to plot a graph then tell R to do next step as if on a new device (see 'par' help page) while it really isn't, just overlaying one ontop of the other
+> #Note-also specify extra margin space on right side for second Y axis
+> windows(4, 4)
+> #this line gives an error, no quartz object. is this needed?, not in full script text below
+> #this is because its a MAC command, Windows is windows, changed
+> par(mar=c(5,4,2,4))
+> plot(Girth, Volume, main="My Trees")
+> #Now do the second plot, use same x values, new Y data, no labels specified, use a different line type for clarity
+> par(new=TRUE)
+> plot(Girth, Height, axes=FALSE, bty= "n", xlab="",ylab = "", pch=3)
+> #add new Y values on 4th side(aka righthand Y axis), add a Y axis label for "marginal text"
+> axis(4)
+> mtext("Height", side=4,line=3)
+> #full script below
+> par(mar=c(5,4,2,4))
+> plot(Girth,Volume, main="MyTrees")
+> par(new=TRUE)
+> plot(Girth, Height, axes=FALSE, bty="n", xlab="", ylab = "", pch=3)
+> axis(4)
+> mtext("Height",side=4,line=3)
+> #B.13.4 Controlling Graphics Devices
+> #when make grpah with plot function, typically open graphics window (in studio is lower right),if want more control have several functions for that
+> #can create new graphics "devices" i.e. seperate windows with command "windows" for Microsoft, or wuartz for Mac, or x11 for X11 Window system
+> #specify dimensions with width and height inside, see below
+> windows(width = 5, height = 3)
+> #to control parameters of graph (ie appearance), use arguements to the par function
+> #many arguemtns refer to sides of graph, numbered 1-4 for bottom x,leftY, topX, rightY
+> #arguements to "par" are a lot, see ?par) including mar(width of side margins, units in # of lines of text, default c(5,4,4,2)+0.1 so bottom is most room, right has least)
+> #"mgp" control spacing of axis title, labels,and line itself, default c(3,1,0) so axis title is 3 lines awy and axis line at edge of plotting region
+> #"tcl"=tick length, as fraction of height of line of text; negative values put ticks outside, positive is inside, default -0.5
+> #can build each side of graph separetly by initiating graph but not plotting axes plots (..., axes=FALSE) and then adding axes seperately e.g. "axis(1)" adds bottom
+> #can use layout to make graph with several smaller subgraphs (see also mfrow and mfcol args to par and function split.screen).  function layout takes matrix as arguement, matrix contains sequence fo number telling R how to fill regions.  Graphs can fit in more than one of these regions if indicated by same numebr
+> #creating compound graph on 4x4 grid, two rows filled in by rwos, 1st in upper left, second upper right, thrid fill thrid and fouth spots in second
+> windows(5,5)
+> layout(matrix(c(1,2,3,3), nrow=2, byrow=TRUE))
+> plot(Girth, Height)
+> #second and third
+> par(mar=c(3,3,1,1), mgp=c(1.6,0.2,0), tcl=0.2)
+> plot(Girth, Height)
+> par(mar=c(3,3,2,1),mgp=c(1.6,0.2,0), tcl=0.2)
+> plot(Girth, Height, axes=FALSE,xlim=c(8,22))
+> axis(1,tcl=-0.3)
+> axis(2,tick=F)
+> rug(Height,side=2,col=2)
+> title("A Third, Very Wide, Plot")
+> #B.13.5 Creating a Grappic File
+> #one way to get graphic is to create graphics device and then save with dev.print in format you want ex PDF
+> getwd()
+[1] "C:/Users/Hayden/Documents"
+> windows(4,4)
+> plot(Height, Volume, main="Tree Data")
+> dev.print(pdf,"MyTree.pdf")
+RStudioGD
+        2
+> #that put it into my documents folder, suppose I could change working directory before doing it to make it go in specific folder, or specify it end up elsewhere
