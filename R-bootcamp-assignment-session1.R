@@ -131,3 +131,52 @@ is.na(a)
 a[!is.na(a)]
 #same with belwo
 na.exclude(a)
+#more example
+mean(a)
+mean(a, na.rm=TRUE)
+d<-na.exclude(a)
+mean(d)
+#B.3.4 Matrices
+#2-d set of elements, all elements of same type
+#character matrix
+matrix(letters[1:4], ncol = 2)
+#letters 1:4 gives a b c d, ncol gives number of columns
+#numeric matrix
+M<-matrix(1:4, nrow =2)
+M
+#Note:matrix filled by columns in column major order, can also do my row
+M2<-matrix(1:4, nrow =2, byrow=TRUE)
+M2
+#matrix with 1's on diagonal
+I<-diag(1, nrow=2)
+I
+#Note, the column and rows are labeled with an integer and comma, likely specifies order aka 1, and ,1 intersect at 1,1
+#Identity matrix important in matrix algerbra, equiv to scalar 1
+#inverse of matrix M is matrix such that can mult with M and equal I (I has 1's along diagonal, 0's elsewhere)
+Minv<-solve(M)
+M %*% Minv
+#QR decomposition available (e.g. qr.solve())
+qr.solve(M)
+help(qr.solve)
+#extraction in matrices, same as in vectors, but specify both rows and columns
+M[1,2]
+M[1,1:2]
+#if leave either row/column blank, R extract all row/columns
+M[,2]
+M[, ]
+#skipping simple matrix algerbra
+#B.3.5 Data frames
+#data frames are 2-d, sim to spreadsheet/matrices.  All columns have same #rows
+#unlike matrix, each column can be different data type
+dat<-data.frame(species =c("S. altissima", "S. rugosa", "E. graminifolia", "A. pilosus"), treatment=factor(c("Control", "Water", "Control", "Water")),height=c(1.1, 0.8, 0.9, 1), width=c(1, 1.7, 0.6, 0.2))
+dat
+#so eac vector in the "data.frame()" is a column, with the vector name as the header
+#extract data like in matrices
+dat[2,]
+#above brings out the the column header too
+dat[3,4]
+#can test elements in dataframes, below tests if each element in column 2 is "Water", can extract rows associated with this criterion
+dat[,2]=="Water"
+dat[dat[,2]=="Water",]
+#can use subset function
+subset(dat,treatment=="Water")
